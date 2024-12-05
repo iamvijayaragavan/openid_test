@@ -22,6 +22,11 @@ jobs:
       - name: Login huaweicloud
         run: |
           curl -H "Authorization: Bearer ${{steps.idtoken.outputs.id_token}}" https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/vjtest/protocols/oidc/auth -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}"
+      - uses: huaweicloud/swr-login@v2.1.0
+        with:
+           access-key-id: 'SZDKPFS70IDTXMETT3ID'
+           access-key-secret: 'HBAT8MFH2mtsWiRy3g9ReYeAfdQpPfjWcTDyzg3k'
+           region: 'ap-southeast-1' 
       - name: List Versions of ECS With Default Region By KooCLI 
         uses: huaweicloud/huaweicloud-cli-action@v1.0.1
         with:
