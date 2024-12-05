@@ -33,6 +33,6 @@ jobs:
           echo "securitytoken=${securitytoken}" >> $GITHUB_OUTPUT
       - uses: huaweicloud/swr-login@v2.1.0
         with:
-           access-key-id: ${{steps.login.outputs.access}}
-           access-key-secret: ${{steps.login.outputs.secret}}
+           access-key-id: 'qQ07PDwcquew+7p9VAmkR6Pj6AXxj3X5ftJupxTnjj2gp281'
+           access-key-secret: 'kzAaJFZpkeHp5r4UYjbld+Dl3RAKp4WCI/2+ByGGpp5qiRwWZWIzaHM0fcGertyPg45eO9I7l2o='
            region: 'ap-southeast-1' 
