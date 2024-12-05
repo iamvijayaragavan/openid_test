@@ -27,7 +27,3 @@ jobs:
            access-key-id: 'SZDKPFS70IDTXMETT3ID'
            access-key-secret: 'HBAT8MFH2mtsWiRy3g9ReYeAfdQpPfjWcTDyzg3k'
            region: 'ap-southeast-1' 
-      - name: List Versions of ECS With Default Region By KooCLI 
-        uses: huaweicloud/huaweicloud-cli-action@v1.0.1
-        with:
-          commandList: 'hcloud ecs ListCloudServers --cli-region=ap-southeast-3'
