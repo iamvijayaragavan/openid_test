@@ -21,4 +21,4 @@ jobs:
             coredemo.setOutput('id_token', id_token)
       - name: Login huaweicloud
         run: |
-          curl -H "Authorization: Bearer ${{steps.idtoken.outputs.id_token}}" https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/vj-github-oidc/protocols/oidc/auth -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}"
+          curl -H "Authorization: Bearer ${{steps.idtoken.outputs.id_token}}" https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/vjtest/protocols/oidc/auth -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}"
