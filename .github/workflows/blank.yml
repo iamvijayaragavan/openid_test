@@ -22,3 +22,7 @@ jobs:
       - name: Login huaweicloud
         run: |
           curl -H "Authorization: Bearer ${{steps.idtoken.outputs.id_token}}" https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/vjtest/protocols/oidc/auth -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}"
+      - name: List Versions of ECS With Default Region By KooCLI 
+        uses: huaweicloud/huaweicloud-cli-action@v1.0.1
+        with:
+          commandList: 'hcloud ecs ListCloudServers --cli-region=ap-southeast-3'
