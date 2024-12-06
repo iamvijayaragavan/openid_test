@@ -33,6 +33,9 @@ jobs:
           securitytoken=$(python -c "import json; print(json.loads('$response')['credential']['securitytoken'])")
           echo $access
           echo $unscoped_token
+          tres=$(curl -ki -s -X POST -H "x-auth-token: ${unscoped_token}" https://swr-api.ap-southeast-3.myhuaweicloud.com/v2/manage/utils/secret -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}" )
+          echo "Docker API"
+          echo "$tres"
           echo "xtoken"=${unscoped_token} >> $GITHUB_OUTPUT
           echo "access=${access}" >> $GITHUB_OUTPUT
           echo "secret=${secret}" >> $GITHUB_OUTPUT
