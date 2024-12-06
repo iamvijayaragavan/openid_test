@@ -14,6 +14,7 @@ jobs:
         
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
+        
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
@@ -27,41 +28,19 @@ jobs:
         id: login
         run: |
           unscoped_token=$(curl -ki -s -X POST -H "Authorization: Bearer ${{steps.idtoken.outputs.id_token}}" https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/vjtest/protocols/oidc/auth -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}" | grep 'X-Subject-Token:' | awk '{print $2}')
-          response=$(curl -L -X POST 'https://iam.ap-southeast-1.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens' -H "x-auth-token: $unscoped_token" -H 'Content-Type: application/json' -d '{"auth":{"identity":{"methods":["token"]}}}')
-          access=$(python -c "import json; print(json.loads('$response')['credential']['access'])")
-          secret=$(python -c "import json; print(json.loads('$response')['credential']['secret'])")
-          securitytoken=$(python -c "import json; print(json.loads('$response')['credential']['securitytoken'])")
-          echo $access
-          echo $unscoped_token
-          tres=$(curl -ki -s -X POST -H "x-auth-token: ${unscoped_token}" https://swr-api.ap-southeast-3.myhuaweicloud.com/v2/manage/utils/secret -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}" )
-          echo "Docker API"
-          echo "$tres"
-          echo "xtoken"=${unscoped_token} >> $GITHUB_OUTPUT
-          echo "access=${access}" >> $GITHUB_OUTPUT
-          echo "secret=${secret}" >> $GITHUB_OUTPUT
-          echo "securitytoken=${securitytoken}" >> $GITHUB_OUTPUT
-      
-      - name: Set up KooCLI
-        id: setup
-        run: |
-          sudo mkdir -p /usr/local/hcloud
-          curl -LO https://hwcloudcli.obs.cn-north-1.myhuaweicloud.com/cli/latest/huaweicloud-cli-linux-amd64.tar.gz
-          sudo tar -zxvf huaweicloud-cli-linux-amd64.tar.gz -C /usr/local/hcloud
-          sudo chmod a+x /usr/local/hcloud/hcloud
-        
-      - name: Show Specific Version Info of ECS by KooCLI
-        id: show
-        run: |
-          /usr/local/hcloud/hcloud configure set --cli-profile=testAKSKST --cli-mode=AKSK --cli-region=ap-southeast-1 --cli-access-key=${{steps.login.outputs.access}} --cli-secret-key=${{steps.login.outputs.secret}} --cli-security-token=${{steps.login.outputs.securitytoken}} --cli-domain-id=0cf8083a8980f4210f31c01864aecda0 --cli-read-timeout=10 --cli-connect-timeout=5 --cli-agree-privacy-statement=true
-          /usr/local/hcloud/hcloud SWR CreateSecret --cli-region="ap-southeast-1"
+          dc_login=$(curl -ki -s -X POST -H "x-auth-token: ${unscoped_token}" https://swr-api.ap-southeast-3.myhuaweicloud.com/v2/manage/utils/secret -H "Accept: application/json;" -H "Content-Type: application/json" -d "{} | grep 'X-Swr-Dockerlogin:'" | awk '{print $2}')
+          echo "Docker login command"
+          echo "$dc_login"
+          echo "dc_login=${dc_login}" >> $GITHUB_OUTPUT
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
           
       - name: Build Docker image
         run: |
-          docker build -t your-region.registry.huaweicloud.com/your-repository/your-image-name:${{ github.sha }} .
+          docker build -t swr-api.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }} .
           
-      - name: Push Docker image to Huawei SWR
+      - name: Docker login & Push Docker image to Huawei SWR
         run: |
-          docker push your-region.registry.huaweicloud.com/your-repository/your-image-name:${{ github.sha }}
+          ${{steps.login.outputs.dc_login}} swr-api.ap-southeast-3.myhuaweicloud.com
+          docker push swr-api.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }}
