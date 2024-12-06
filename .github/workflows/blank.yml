@@ -42,5 +42,5 @@ jobs:
           
       - name: Docker login & Push Docker image to Huawei SWR
         run: |
-          ${{steps.login.outputs.dc_login}} swr-api.ap-southeast-3.myhuaweicloud.com
+          ${{steps.login.outputs.dc_login}} swr.ap-southeast-3.myhuaweicloud.com
           docker push swr-api.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }}
