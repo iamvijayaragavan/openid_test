@@ -38,9 +38,9 @@ jobs:
           
       - name: Build Docker image
         run: |
-          docker build -t swr-api.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }} .
+          docker build -t swr.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }} .
           
       - name: Docker login & Push Docker image to Huawei SWR
         run: |
           ${{steps.login.outputs.dc_login}} swr.ap-southeast-3.myhuaweicloud.com
-          docker push swr-api.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }}
+          docker push swr.ap-southeast-3.myhuaweicloud.com/vj-devops/my-nginx:${{ github.sha }}
