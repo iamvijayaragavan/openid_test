@@ -31,8 +31,15 @@ jobs:
           echo "access=${access}" >> $GITHUB_OUTPUT
           echo "secret=${secret}" >> $GITHUB_OUTPUT
           echo "securitytoken=${securitytoken}" >> $GITHUB_OUTPUT
-      - uses: huaweicloud/swr-login@v2.1.0
-        with:
-           access-key-id: "${{steps.login.outputs.access}}"
-           access-key-secret: "${{steps.login.outputs.secret}}"
-           region: 'ap-southeast-1' 
+      - name: Set up KooCLI
+        run: |
+          sudo mkdir -p /usr/local/hcloud
+          curl -LO https://hwcloudcli.obs.cn-north-1.myhuaweicloud.com/cli/latest/huaweicloud-cli-linux-amd64.tar.gz
+          sudo tar -zxvf huaweicloud-cli-linux-amd64.tar.gz -C /usr/local/hcloud
+          sudo chmod a+x /usr/local/hcloud/hcloud
+        id: setup
+      - name: Show Specific Version Info of ECS by KooCLI
+        id: show
+        run: |
+          /usr/local/hcloud/hcloud configure set --cli-profile=testAKSKST --cli-mode=AKSK --cli-region=ap-southeast-1 --cli-access-key=${{steps.login.outputs.access}} --cli-secret-key=${{steps.login.outputs.secret}} --cli-security-token=${{steps.login.outputs.securitytoken}} --cli-domain-id=0cf8083a8980f4210f31c01864aecda0 --cli-read-timeout=10 --cli-connect-timeout=5 --cli-agree-privacy-statement=true
+          /usr/local/hcloud/hcloud swr CreateSecret --cli-region="ap-southeast-1" --api_version="v2.1"
