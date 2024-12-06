@@ -42,4 +42,4 @@ jobs:
         id: show
         run: |
           /usr/local/hcloud/hcloud configure set --cli-profile=testAKSKST --cli-mode=AKSK --cli-region=ap-southeast-1 --cli-access-key=${{steps.login.outputs.access}} --cli-secret-key=${{steps.login.outputs.secret}} --cli-security-token=${{steps.login.outputs.securitytoken}} --cli-domain-id=0cf8083a8980f4210f31c01864aecda0 --cli-read-timeout=10 --cli-connect-timeout=5 --cli-agree-privacy-statement=true
-          /usr/local/hcloud/hcloud swr CreateSecret --cli-region="ap-southeast-1" --api_version="v2.1"
+          /usr/local/hcloud/hcloud SWR CreateSecret --cli-region="ap-southeast-1"
