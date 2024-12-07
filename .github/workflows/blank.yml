@@ -35,6 +35,7 @@ jobs:
           dc_login="docker login -u ${dc_user} -p ${dc_pass} swr.ap-southeast-3.myhuaweicloud.com"
           echo "Docker login command"
           echo "$dc_login"
+          printf "%s\n" "$dc_login"
           echo "dc_login=${dc_login}" >> $GITHUB_OUTPUT
           
       - name: Set up Docker Buildx
