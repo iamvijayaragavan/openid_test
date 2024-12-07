@@ -29,20 +29,10 @@ jobs:
         run: |
           unscoped_token=$(curl -ki -s -X POST -H "Authorization: Bearer ${{steps.idtoken.outputs.id_token}}" https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/vjtest/protocols/oidc/auth -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}" | grep 'X-Subject-Token:' | awk '{print $2}')
           response=$(curl -ki -s -X POST -H "x-auth-token: ${unscoped_token}" https://swr-api.ap-southeast-3.myhuaweicloud.com/v2/manage/utils/secret)
-          echo $response
-          header_value=$(echo "$response" | grep -i 'X-Swr-Dockerlogin:' | cut -d ':' -f2 | sed 's/^ *//;s/ *$//' | tr -d '\r' | tr -d '\n')
-          echo $header_value
-          dc_login="${header_value} swr.ap-southeast-3.myhuaweicloud.com"
-
-          #dc_login=$(curl -ki -s -X POST -H "x-auth-token: ${unscoped_token}" https://swr-api.ap-southeast-3.myhuaweicloud.com/v2/manage/utils/secret -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}" | grep 'X-Swr-Dockerlogin:' | cut -d ':' -f2 | sed 's/^ *//;s/ *$//'| tr -d '\n' | awk '{printf "%s swr.ap-southeast-3.myhuaweicloud.com", $0}')
-          #dc_command=$(curl -ki -s -X POST -H "x-auth-token: ${unscoped_token}" https://swr-api.ap-southeast-3.myhuaweicloud.com/v2/manage/utils/secret -H "Accept: application/json;" -H "Content-Type: application/json" -d "{}" | grep 'X-Swr-Dockerlogin:')
-          #dc_user=$(echo "$dc_command" | awk '{print $5}'| tr -d '\n')
-          #dc_pass=$(echo "$dc_command" | awk '{print $7}'| tr -d '\n')
-          #dc_login="Full docker login command is docker login -u ${dc_user} -p ${dc_pass} swr.ap-southeast-3.myhuaweicloud.com"
-          #dc_login=$
+          dc_header=$(echo "$response" | grep -i 'X-Swr-Dockerlogin:' | cut -d ':' -f2 | sed 's/^ *//;s/ *$//' | tr -d '\r' | tr -d '\n')
+          dc_login="${dc_header} swr.ap-southeast-3.myhuaweicloud.com"
           echo "Docker login command"
-          #echo -n "$dc_login"
-          printf "%s\n" "$dc_login"
+          echo "$dc_login"
           echo "dc_login=${dc_login}" >> $GITHUB_OUTPUT
           
       - name: Set up Docker Buildx
